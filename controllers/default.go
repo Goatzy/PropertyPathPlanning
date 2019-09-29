@@ -150,102 +150,66 @@ func SaveMongoDB(){
 	}
 	defer session.Close()
 	session.SetMode(mgo.Monotonic, true)
-	c := session.DB("test").C("Seats")
-	err = c.Insert(&Seat{
-		No:     0,
-		Name:   "Origin",
-		Amount: 0,
-	},&Seat{
-		No:     1,
-		Name:   "Property1",
-		Amount: 1000,
-	},&Seat{
-		No:     2,
-		Name:   "Property2",
-		Amount: 2000,
-	},&Seat{
-		No:     3,
-		Name:   "Property3",
-		Amount: 4000,
-	},&Seat{
-		No:     4,
-		Name:   "Property4",
-		Amount: 5000,
-	},&Seat{
-		No:     5,
-		Name:   "Property5",
-		Amount: 4593,
-	},&Seat{
-		No:     6,
-		Name:   "Property6",
-		Amount: 7564,
-	},&Seat{
-		No:     7,
-		Name:   "Property7",
-		Amount: 5588,
-	},&Seat{
-		No:     8,
-		Name:   "Property8",
-		Amount: 8970,
-	},&Seat{
-		No:     9,
-		Name:   "Property9",
-		Amount: 4000,
-	},&Seat{
-		No:     10,
-		Name:   "Property10",
-		Amount: 2000,
-	})
-	c=session.DB("test").C("Seats")
-	err=c.Insert(&Range{
-		FirstNo:  1,
-		SecondNo: 0,
-		Distance: 12,
-	},&Range{
-		FirstNo:  2,
-		SecondNo: 0,
-		Distance: 2,
-	},&Range{
-		FirstNo:  3,
-		SecondNo: 0,
-		Distance: 6,
-	},&Range{
-		FirstNo:  2,
-		SecondNo: 1,
-		Distance: 11,
-	},&Range{
-		FirstNo:  3,
-		SecondNo: 1,
-		Distance: 12,
-	},&Range{
-		FirstNo:  3,
-		SecondNo: 2,
-		Distance: 8,
-	},&Range{
-		FirstNo:  0,
-		SecondNo: 1,
-		Distance: 12,
-	},&Range{
-		FirstNo:  0,
-		SecondNo: 2,
-		Distance: 2,
-	},&Range{
-		FirstNo:  0,
-		SecondNo: 3,
-		Distance: 6,
-	},&Range{
-		FirstNo:  1,
-		SecondNo: 2,
-		Distance: 11,
-	},&Range{
-		FirstNo:  1,
-		SecondNo: 3,
-		Distance: 12,
-	},&Range{
-		FirstNo:  2,
-		SecondNo: 3,
-		Distance: 8,
-	})
+	c := session.DB("Property").C("Seats")
+		err = c.Insert(&Seat{
+			No:     0,
+			Name:   "Origin",
+			Amount: 0,
+		},&Seat{
+			No:     1,
+			Name:   "Property1",
+			Amount: 1000,
+		},&Seat{
+			No:     2,
+			Name:   "Property2",
+			Amount: 2000,
+		},&Seat{
+			No:     3,
+			Name:   "Property3",
+			Amount: 4000,
+		},&Seat{
+			No:     4,
+			Name:   "Property4",
+			Amount: 5000,
+		},&Seat{
+			No:     5,
+			Name:   "Property5",
+			Amount: 4593,
+		},&Seat{
+			No:     6,
+			Name:   "Property6",
+			Amount: 7564,
+		},&Seat{
+			No:     7,
+			Name:   "Property7",
+			Amount: 5588,
+		},&Seat{
+			No:     8,
+			Name:   "Property8",
+			Amount: 8970,
+		},&Seat{
+			No:     9,
+			Name:   "Property9",
+			Amount: 4000,
+		},&Seat{
+			No:     10,
+			Name:   "Property10",
+			Amount: 2000,
+		})
+	c=session.DB("Property").C("Distance")
+	rand.New(rand.NewSource(time.Now().UnixNano()))
+	for i:=0;i<10 ;i++  {
+		for j := 0; j < 10; j++ {
+			if i!=j{
+			err=c.Insert(&Range{
+				FirstNo:  i,
+				SecondNo: j,
+				Distance:rand.Intn(99)+1 ,
+			})
+			}
+		}
+	}
+
 }
 /*此函数用于将查询redis数据，若不存在则在mongoDB数据库中查找，并填充数组，并写入redis缓存，redis缓存60秒过期*/
 func FillMatrix(matrix [][MAX]int,i,j int,chosen []int) {
@@ -282,6 +246,7 @@ func FillMatrix(matrix [][MAX]int,i,j int,chosen []int) {
 
 
 func (this *MainController) Get() {
+	SaveMongoDB()
 	this.TplName = "index.html"
 }
 func (this *MainController) Post(){
